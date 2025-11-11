@@ -8,6 +8,7 @@ import com.Uziel.UCastanedaProgramacionNCapas.DAO.MunicipioDAOImplementation;
 import com.Uziel.UCastanedaProgramacionNCapas.DAO.PaisDAOImplementation;
 import com.Uziel.UCastanedaProgramacionNCapas.DAO.RolDAOImplementation;
 import com.Uziel.UCastanedaProgramacionNCapas.DAO.UsuarioDAOImplementation;
+import com.Uziel.UCastanedaProgramacionNCapas.DAO.UsuarioJPADAOImplementation;
 import com.Uziel.UCastanedaProgramacionNCapas.ML.Colonia;
 import com.Uziel.UCastanedaProgramacionNCapas.ML.Direccion;
 import com.Uziel.UCastanedaProgramacionNCapas.ML.Estado;
@@ -77,12 +78,15 @@ public class UsuarioController {
     private DireccionDAOImplementation DireccionDAOImplementation;
     @Autowired
     private ValidationService validationService;
+    @Autowired
+    private UsuarioJPADAOImplementation usuarioJPADAOImplementation;
 
 //----------INDEX---------
     @GetMapping
     public String Index(Model model) {
 
         Result result = usuarioDAOImplementation.GetAll();
+        Result resultJPA = usuarioJPADAOImplementation.GetAll();
 
         model.addAttribute("Usuarios", result.objects);
         model.addAttribute("Roles", rolDAOImplementation.GetAll().objects);
