@@ -11,78 +11,79 @@ import java.util.List;
 import org.springframework.format.annotation.DateTimeFormat;
 
 public class Usuario {
+
     private int IdUsuario; //Propiedad
-    
+
     @NotNull(message = "El campo no puede ser Nulo")
     @NotBlank(message = "El campo debe contener informacion")
     @Size(min = 5, max = 18)
-    @Pattern(regexp = "[a-zA-Z0-9_ñ]+$", message="El campo debe de tener _, Numeros y Letras")
+    @Pattern(regexp = "[a-zA-Z0-9_ñ]+$", message = "El campo debe de tener _, Numeros y Letras")
     private String UserName;
 
     @NotNull(message = "El Campo no puede quedar vacio")
     @NotBlank(message = "El Campo debe contener informacion")
     @Size(min = 2, max = 20)
-    @Pattern(regexp = "^[A-Za-zñáéíóúÁÉÍÓÚ]+(\\s[A-Za-zñáéíóúÁÉÍÓÚ]+)*$", message="Solo se pueden ingresar Letras")
+    @Pattern(regexp = "^[A-Za-zñáéíóúÁÉÍÓÚ]+(\\s[A-Za-zñáéíóúÁÉÍÓÚ]+)*$", message = "Solo se pueden ingresar Letras")
     private String Nombre;
-    
-    @NotNull(message= "El campo no puede quedar vacio")
+
+    @NotNull(message = "El campo no puede quedar vacio")
     @NotBlank(message = "El Campo debe contener información con Letras")
     @Size(min = 3, max = 17)
-    @Pattern(regexp = "^[A-Za-zñáéíóúÁÉÍÓÚ]+(\\s[A-Za-zñáéíóúÁÉÍÓÚ]+)*$", message="Solo se pueden ingresar Letras")
+    @Pattern(regexp = "^[A-Za-zñáéíóúÁÉÍÓÚ]+(\\s[A-Za-zñáéíóúÁÉÍÓÚ]+)*$", message = "Solo se pueden ingresar Letras")
     private String ApellidoPaterno;
-    
+
     @NotBlank(message = "El Campo debe contener información con Letras")
     @Size(min = 3, max = 17)
-    @Pattern(regexp = "^[A-Za-zñáéíóúÁÉÍÓÚ]+(\\s[A-Za-zñáéíóúÁÉÍÓÚ]+)*$", message="Solo se pueden ingresar Letras")
+    @Pattern(regexp = "^[A-Za-zñáéíóúÁÉÍÓÚ]+(\\s[A-Za-zñáéíóúÁÉÍÓÚ]+)*$", message = "Solo se pueden ingresar Letras")
     private String ApellidoMaterno;
-    
-    @NotNull(message= "El campo no puede quedar vacio")
+
+    @NotNull(message = "El campo no puede quedar vacio")
     @NotBlank(message = "El campo Debe de contener información")
     @Email(message = "Ingresa un correo valido")
     private String Email;
-    
-    @NotNull(message= "El campo no puede quedar vacio")
+
+    @NotNull(message = "El campo no puede quedar vacio")
     @NotBlank(message = "Ingresa información a la casilla")
     @Size(min = 8, max = 16, message = "La contraseña minimo de 8 caracteres")
-    @Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{8,16}$", message="La contraseña debe de Tener al Menos una Letra mayuscula y un Numero")
+    @Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{8,16}$", message = "La contraseña debe de Tener al Menos una Letra mayuscula y un Numero")
     private String Password;
-    
+
     @NotNull(message = "El campo no puede quedar vacio")
     @Past(message = "Solo puedes ingresar fechas anteriores a la actual")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date FechaNacimiento;
-    
+
     @NotNull(message = " ")
     @NotBlank(message = "Debes de Seleccionar una Opcion")
     private String Sexo;
-    
+
     @NotNull(message = " ")
     @NotBlank(message = "El campo no debe de estar vacio")
-    @Pattern(regexp = "\\+*([0-9]{2,3})*\\s*[0-9]{10}$", message="El campo Solo acepta numeros y +")
+    @Pattern(regexp = "\\+*([0-9]{2,3})*\\s*[0-9]{10}$", message = "El campo Solo acepta numeros y +")
     private String Telefono;
-    
+
     @NotBlank(message = "El campo no debe de estar vacio")
-    @Pattern(regexp = "\\+*([0-9]{2,3})*\\s*[0-9]{10}$", message="El campo Solo acepta numeros y +")
+    @Pattern(regexp = "\\+*([0-9]{2,3})*\\s*[0-9]{10}$", message = "El campo Solo acepta numeros y +")
     private String Celular;
-    
+
     @NotNull(message = " ")
-    @NotBlank(message= "El campo no puede quedar vacio")
+    @NotBlank(message = "El campo no puede quedar vacio")
     @Pattern(regexp = "^([A-Z][AEIOUX][A-Z]{2}\\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\\d|3[01])[HM](?:AS|B[CS]|C[CLMSH]|D[FG]|G[TR]|HG|JC|M[CNS]|N[ETL]|OC|PL|Q[TR]|S[PLR]|T[CSL]|VZ|YN|ZS)[B-DF-HJ-NP-TV-Z]{3}[A-Z\\d])(\\d)$", message = "ingresa una CURP valida")
     private String Curp;
-    
+
     private String Imagen;
-    
+
     private String extension;
-    
+
     public Rol Rol; //Propiedad de navegación
-    
+
     public List<Direccion> Direcciones;
-    
-    public Usuario(){
-        
+
+    public Usuario() {
+
     }
-    
-    public Usuario(String UserName, String Nombre, String ApellidoPaterno, String ApellidoMaterno, String Email, String Password, Date FechaNacimiento, String Sexo, String Telefono, String Celular, String Curp, String Imagen){
+
+    public Usuario(String UserName, String Nombre, String ApellidoPaterno, String ApellidoMaterno, String Email, String Password, Date FechaNacimiento, String Sexo, String Telefono, String Celular, String Curp, String Imagen) {
         this.UserName = UserName;
         this.Nombre = Nombre;
         this.ApellidoPaterno = ApellidoPaterno;
@@ -95,108 +96,108 @@ public class Usuario {
         this.Curp = Curp;
         this.Imagen = Imagen;
     }
-    
-    public void setIdUsuario(int IdUsuario){
+
+    public void setIdUsuario(int IdUsuario) {
         this.IdUsuario = IdUsuario;
     }
-    
-    public int getIdUsuario(){
+
+    public int getIdUsuario() {
         return IdUsuario;
     }
-    
-    public void setUserName(String UserName){
+
+    public void setUserName(String UserName) {
         this.UserName = UserName;
     }
-    
-    public String getUserName(){
+
+    public String getUserName() {
         return UserName;
     }
-    
-    public void setNombre(String Nombre){
-        this.Nombre = Nombre; 
+
+    public void setNombre(String Nombre) {
+        this.Nombre = Nombre;
     }
-    
-    public String getNombre(){
+
+    public String getNombre() {
         return Nombre;
     }
-    
-    public void setApellidoPaterno(String ApellidoPaterno){
+
+    public void setApellidoPaterno(String ApellidoPaterno) {
         this.ApellidoPaterno = ApellidoPaterno;
     }
-    
-    public String getApellidoPaterno(){
+
+    public String getApellidoPaterno() {
         return ApellidoPaterno;
     }
-    
-    public void setApellidoMaterno(String ApellidoMaterno){
+
+    public void setApellidoMaterno(String ApellidoMaterno) {
         this.ApellidoMaterno = ApellidoMaterno;
     }
-    
-    public String getApellidoMaterno(){
+
+    public String getApellidoMaterno() {
         return ApellidoMaterno;
     }
-    
-    public void setEmail(String Email){
+
+    public void setEmail(String Email) {
         this.Email = Email;
     }
-    
-    public String getEmail(){
+
+    public String getEmail() {
         return Email;
     }
-    
-    public void setPassword(String Password){
+
+    public void setPassword(String Password) {
         this.Password = Password;
     }
-    
-    public String getPassword(){
+
+    public String getPassword() {
         return Password;
     }
-    
-    public void setFechaNacimiento(Date FechaNacimiento){
+
+    public void setFechaNacimiento(Date FechaNacimiento) {
         this.FechaNacimiento = FechaNacimiento;
     }
-    
-    public Date getFechaNacimiento(){
+
+    public Date getFechaNacimiento() {
         return FechaNacimiento;
     }
-    
-    public void setSexo(String Sexo){
+
+    public void setSexo(String Sexo) {
         this.Sexo = Sexo;
     }
-    
-    public String getSexo(){
+
+    public String getSexo() {
         return Sexo;
     }
-    
-    public void setTelefono(String Telefono){
+
+    public void setTelefono(String Telefono) {
         this.Telefono = Telefono;
     }
-    
-    public String getTelefono(){
+
+    public String getTelefono() {
         return Telefono;
     }
-    
-    public void setCelular(String Celular){
+
+    public void setCelular(String Celular) {
         this.Celular = Celular;
     }
-    
-    public String getCelular(){
+
+    public String getCelular() {
         return Celular;
     }
-        
-    public void setCurp(String Curp){
+
+    public void setCurp(String Curp) {
         this.Curp = Curp;
     }
-    
-    public String getCurp(){
+
+    public String getCurp() {
         return Curp;
     }
-    
-    public void setImagen(String Imagen){
+
+    public void setImagen(String Imagen) {
         this.Imagen = Imagen;
     }
-    
-    public String getImagen(){
+
+    public String getImagen() {
         return Imagen;
     }
 
@@ -223,10 +224,5 @@ public class Usuario {
     public void setDirecciones(List<Direccion> Direcciones) {
         this.Direcciones = Direcciones;
     }
-    
-  
-    
- 
-    
-    
+
 }
