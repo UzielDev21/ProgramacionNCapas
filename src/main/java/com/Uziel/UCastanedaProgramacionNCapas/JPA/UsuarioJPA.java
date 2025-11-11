@@ -1,14 +1,19 @@
 package com.Uziel.UCastanedaProgramacionNCapas.JPA;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "USUARIO")
@@ -16,7 +21,7 @@ public class UsuarioJPA {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idusuario")
+    @Column(name = "idusuario", nullable = false)
     private int IdUsuario;
     
     @Column(name = "nombre")
@@ -48,16 +53,20 @@ public class UsuarioJPA {
 
     @Column(name = "curp")
     private String Curp;
-
+    
     @Column(name = "imagenfile")
+    @Lob
     private String Imagen;
 
     @ManyToOne
     @JoinColumn(name = "idrol")
-    public RolJPA Rol; 
+    public RolJPA RolJPA;
     
+    @OneToMany(mappedBy = "UsuarioJPA", cascade = CascadeType.ALL, orphanRemoval = true)
+    public List<DireccionJPA> DireccionesJPA = new ArrayList<>();
+    
+//------------------------------------------------------------------SETTERS Y GETTERS------------------------------------------------------------------//
     public UsuarioJPA() {
-
     }
 
     public UsuarioJPA(int IdUsuario, String Nombre, String ApellidoPaterno, String ApellidoMaterno, String Email,
@@ -171,5 +180,22 @@ public class UsuarioJPA {
     public String getImagen(){
         return Imagen;
     }
+    
+    public void SetRolJPA(RolJPA RolJPA){
+        this.RolJPA = RolJPA;
+    }
+    
+    public RolJPA getRolJPA(){
+        return RolJPA;
+    }
+
+    public void setDireccionesJPA(List<DireccionJPA> DireccionesJPA) {
+        this.DireccionesJPA = DireccionesJPA;
+    }
+    
+    public List<DireccionJPA> getDireccionesJPA() {
+        return DireccionesJPA;
+    }
+
 
 }
