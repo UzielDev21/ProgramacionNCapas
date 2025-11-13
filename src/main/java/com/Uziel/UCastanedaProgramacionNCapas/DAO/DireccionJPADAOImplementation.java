@@ -23,6 +23,29 @@ public class DireccionJPADAOImplementation implements IDireccionJPA {
 
     @Override
     @Transactional
+    public Result DireccionGetByIdJPA(int IdDireccion){
+        Result result = new Result();
+        
+        try {
+            DireccionJPA direccionJPA = entityManager.find(DireccionJPA.class, IdDireccion);
+            Direccion direccion = modelMapper.map(direccionJPA, Direccion.class);
+            
+            ColoniaJPA coloniaJPA = direccionJPA.getColoniaJPA();
+            
+            result.object = direccion;
+            result.correct = true;
+            
+        } catch (Exception ex) {
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex;
+        }
+        
+        return result;
+    }
+    
+    @Override
+    @Transactional
     public Result DireccionAddJPA(Direccion direccion, int IdUsuario) {
         Result result = new Result();
 
@@ -83,6 +106,8 @@ public class DireccionJPADAOImplementation implements IDireccionJPA {
                 result.correct = false;
                 result.errorMessage = "No existe la Direccion";
             }
+            
+            result.correct = true;
 
         } catch (Exception ex) {
             result.correct = false;

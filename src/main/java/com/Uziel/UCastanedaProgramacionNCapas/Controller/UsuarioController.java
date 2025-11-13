@@ -355,9 +355,11 @@ public class UsuarioController {
     @GetMapping("Details/Direccion/{IdDireccion}")
     @ResponseBody
     public Result getDireccion(@PathVariable("IdDireccion") int IdDireccion) {
-        Result result = direccionDAOImplementation.DireccionGetbyId(IdDireccion);
-
-        return direccionDAOImplementation.DireccionGetbyId(IdDireccion);
+        //Result result = direccionDAOImplementation.DireccionGetbyId(IdDireccion);
+        //return direccionDAOImplementation.DireccionGetbyId(IdDireccion);
+        
+        Result resultJPA = direccionJPADAOImplementation.DireccionGetByIdJPA(IdDireccion);
+        return direccionJPADAOImplementation.DireccionGetByIdJPA(IdDireccion);
     }
 
 //------------------------------------------------------------------ELIMINAR DIRECCION DETAILS------------------------------------------------------------------//
@@ -366,8 +368,8 @@ public class UsuarioController {
     public Result DireccionDelete(@PathVariable("IdDireccion") int IdDireccion, Model model) {
 
         //Result result = direccionDAOImplementation.DireccionDelete(IdDireccion);
-        Result result = direccionJPADAOImplementation.DireccionDeleteJPA(IdDireccion);
-        return result;
+        Result resultJPA = direccionJPADAOImplementation.DireccionDeleteJPA(IdDireccion);
+        return resultJPA;
     }
 
 //------------------------------------------------------------------FORMULARIO------------------------------------------------------------------//
