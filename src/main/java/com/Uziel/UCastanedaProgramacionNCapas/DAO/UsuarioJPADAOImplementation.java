@@ -131,4 +131,63 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPA {
         return result;
     }
 
+    @Override
+    public Result BuscarUsuarioJPA(Usuario usuario) {
+        Result result = new Result();
+        
+        try {
+            String queryValidar = "FROM UsuarioJPA usuarioJPA";
+            boolean filtro = false;
+            
+            if (usuario.getNombre() != null && !usuario.getNombre().isEmpty()) {
+                if (!filtro) {
+                    queryValidar = queryValidar + " WHERE usuarioJPA.Nombre LIKE :nombre".toLowerCase();
+                    filtro = true;
+                }else{
+                    queryValidar = queryValidar + " AND usuarioJPA.Nombre LIKE :nombre".toLowerCase();
+                }
+            }
+            
+            if (usuario.getApellidoPaterno() != null && !usuario.getApellidoPaterno().isEmpty()) {
+                if (!filtro) {
+                    queryValidar = queryValidar + " WHERE usuarioJPA.ApellidoPaterno LIKE :apellidoPaterno".toLowerCase();
+                    filtro = true;
+                } else {
+                    queryValidar = queryValidar + " AND usuarioJPA.ApellidoPaterno LIKE :apellidoPaterno".toLowerCase();
+                }
+            }
+            
+            if (usuario.getApellidoMaterno() != null && !usuario.getApellidoMaterno().isEmpty()) {
+                if (!filtro) {
+                    queryValidar = queryValidar + " WHERE usuarioJPA.ApellidoMaterno LIKE :apellidoMaterno".toLowerCase();
+                    filtro = true;
+                } else {
+                    queryValidar = queryValidar + " AND usuarioJPA.ApellidoMaterno LIKE :apellidoMaterno".toLowerCase();
+                }
+            }
+            
+            if (usuario.Rol != null && usuario.Rol.getIdRol() > 0) {
+                if (!filtro) {
+                    queryValidar = queryValidar + " WHERE usuarioJPA.RolJPA.IdRol = :idRol";
+                    filtro = true;
+                } else {
+                    queryValidar = queryValidar + " AND usuarioJPA.RolJPA.IdRol = :idRol";
+                }
+            }
+            
+            TypedQuery<UsuarioJPA> queryBuscar = entityManager.createQuery(queryValidar, UsuarioJPA.class);
+            
+            if (usuario.getNombre() != null && !usuario.getNombre().isEmpty()) {
+                queryBuscar.setParameter("nombre", "%" + usuario.getNombre() + "%");
+            }
+            
+        } catch (Exception ex) {
+            
+        }
+        
+        
+        return result;
+    }
+    
+
 }
