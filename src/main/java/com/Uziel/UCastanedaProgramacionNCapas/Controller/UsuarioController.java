@@ -122,9 +122,10 @@ public class UsuarioController {
     @PostMapping()
     public String BuscarUsuario(@ModelAttribute("Usuario") Usuario usuario, Model model) {
 
-        Result result = usuarioDAOImplementation.UsuariosBuscar(usuario);
-        model.addAttribute("Usuarios", result.objects);
+//        Result result = usuarioDAOImplementation.UsuariosBuscar(usuario);
 //        model.addAttribute("Roles", rolDAOImplementation.GetAll().objects);
+        Result resultJPA = usuarioJPADAOImplementation.BuscarUsuarioJPA(usuario);
+        model.addAttribute("Usuarios", resultJPA.objects);
         model.addAttribute("Roles", rolJPADAOImplementation.GetAllJPA().objects);
         model.addAttribute("Usuario", usuario);
 

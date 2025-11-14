@@ -6,10 +6,12 @@ import com.Uziel.UCastanedaProgramacionNCapas.JPA.RolJPA;
 import com.Uziel.UCastanedaProgramacionNCapas.JPA.UsuarioJPA;
 import com.Uziel.UCastanedaProgramacionNCapas.ML.Direccion;
 import com.Uziel.UCastanedaProgramacionNCapas.ML.Result;
+import com.Uziel.UCastanedaProgramacionNCapas.ML.Rol;
 import com.Uziel.UCastanedaProgramacionNCapas.ML.Usuario;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
@@ -52,12 +54,12 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPA {
         Result result = new Result();
 
         try {
-            
+
             UsuarioJPA usuarioJPA = entityManager.find(UsuarioJPA.class, IdUsuario);
-            
+
             Usuario usuario = modelMapper.map(usuarioJPA, Usuario.class);
             RolJPA rolJPA = usuarioJPA.getRolJPA();
-            
+
             result.object = usuario;
             result.correct = true;
 
@@ -134,38 +136,38 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPA {
     @Override
     public Result BuscarUsuarioJPA(Usuario usuario) {
         Result result = new Result();
-        
+
         try {
             String queryValidar = "FROM UsuarioJPA usuarioJPA";
             boolean filtro = false;
-            
+
             if (usuario.getNombre() != null && !usuario.getNombre().isEmpty()) {
                 if (!filtro) {
-                    queryValidar = queryValidar + " WHERE usuarioJPA.Nombre LIKE :nombre".toLowerCase();
+                    queryValidar = queryValidar + " WHERE LOWER(usuarioJPA.Nombre) LIKE :nombre";
                     filtro = true;
-                }else{
-                    queryValidar = queryValidar + " AND usuarioJPA.Nombre LIKE :nombre".toLowerCase();
+                } else {
+                    queryValidar = queryValidar + " AND LOWER(usuarioJPA.Nombre) LIKE :nombre";
                 }
             }
-            
+
             if (usuario.getApellidoPaterno() != null && !usuario.getApellidoPaterno().isEmpty()) {
                 if (!filtro) {
-                    queryValidar = queryValidar + " WHERE usuarioJPA.ApellidoPaterno LIKE :apellidoPaterno".toLowerCase();
+                    queryValidar = queryValidar + " WHERE LOWER(usuarioJPA.ApellidoPaterno) LIKE :apellidoPaterno";
                     filtro = true;
                 } else {
-                    queryValidar = queryValidar + " AND usuarioJPA.ApellidoPaterno LIKE :apellidoPaterno".toLowerCase();
+                    queryValidar = queryValidar + " AND LOWER(usuarioJPA.ApellidoPaterno) LIKE :apellidoPaterno";
                 }
             }
-            
+
             if (usuario.getApellidoMaterno() != null && !usuario.getApellidoMaterno().isEmpty()) {
                 if (!filtro) {
-                    queryValidar = queryValidar + " WHERE usuarioJPA.ApellidoMaterno LIKE :apellidoMaterno".toLowerCase();
+                    queryValidar = queryValidar + " WHERE LOWER(usuarioJPA.ApellidoMaterno) LIKE :apellidoMaterno";
                     filtro = true;
                 } else {
-                    queryValidar = queryValidar + " AND usuarioJPA.ApellidoMaterno LIKE :apellidoMaterno".toLowerCase();
+                    queryValidar = queryValidar + " AND LOWER(usuarioJPA.ApellidoMaterno) LIKE :apellidoMaterno";
                 }
             }
-            
+
             if (usuario.Rol != null && usuario.Rol.getIdRol() > 0) {
                 if (!filtro) {
                     queryValidar = queryValidar + " WHERE usuarioJPA.RolJPA.IdRol = :idRol";
@@ -174,20 +176,45 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPA {
                     queryValidar = queryValidar + " AND usuarioJPA.RolJPA.IdRol = :idRol";
                 }
             }
-            
+
+            queryValidar = queryValidar + " ORDER BY usuarioJPA.IdUsuario";
+
             TypedQuery<UsuarioJPA> queryBuscar = entityManager.createQuery(queryValidar, UsuarioJPA.class);
-            
+
             if (usuario.getNombre() != null && !usuario.getNombre().isEmpty()) {
                 queryBuscar.setParameter("nombre", "%" + usuario.getNombre() + "%");
             }
-            
+
+            if (usuario.getApellidoPaterno() != null && !usuario.getApellidoPaterno().isEmpty()) {
+                queryBuscar.setParameter("apellidoPaterno", "%" + usuario.getApellidoPaterno() + "%");
+            }
+
+            if (usuario.getApellidoMaterno() != null && !usuario.getApellidoMaterno().isEmpty()) {
+                queryBuscar.setParameter("apellidoMaterno", "%" + usuario.getApellidoMaterno() + "%");
+            }
+            if (usuario.Rol != null && usuario.Rol.getIdRol() > 0) {
+                queryBuscar.setParameter("idRol",  usuario.Rol.getIdRol());
+            }
+
+            List<UsuarioJPA> usuariosJPA = queryBuscar.getResultList();
+            List<Usuario> usuarios = new ArrayList<>();
+
+            for (UsuarioJPA usuarioJPA : usuariosJPA) {
+                Usuario usuario2 = modelMapper.map(usuarioJPA, Usuario.class);
+//                usuario2.Rol = modelMapper.map(usuarioJPA.RolJPA, Rol.class);
+
+                usuarios.add(usuario2);
+            }
+
+            result.objects = (List<Object>) (List<?>) usuarios;
+            result.correct = true;
         } catch (Exception ex) {
-            
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex;
         }
-        
-        
+
         return result;
     }
-    
 
 }
