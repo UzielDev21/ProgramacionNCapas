@@ -303,7 +303,7 @@
         <script th:if="${MsgError}" th:inline="javascript">
                        Swal.fire({
                            title: [[${MsgError}]],
-                                   icon: "success",
+                                   icon: "error",
                                    draggable: true
                        });
         </script>
@@ -318,13 +318,13 @@
                     });
             });
 <!-----------------------------------------------------------------------------CARGA DE LOS DDL--------------------------------------------------------------------------->
-            $(document).ready(function () {
-                $("#ddlPais").change(function () {
-                $.ajax({
-                    type: 'GET',
-                    url: "/UsuarioIndex/Add/Estados/" + $("#ddlPais").val(),
-                    dataType: "json",
-                    success: function (data, textStatus, jqXHR) {
+                $(document).ready(function () {
+                    $("#ddlPais").change(function () {
+                    $.ajax({
+                        type: 'GET',
+                        url: "/UsuarioIndex/Add/Estados/" + $("#ddlPais").val(),
+                        dataType: "json",
+                        success: function (data, textStatus, jqXHR) {
 
                         $("#ddlEstado").empty();
                         $("#ddlMunicipio").empty();
@@ -342,6 +342,23 @@
                     });
                 });
             });
+            
+            function cargaEstados(idPais, callback){
+            
+            $.ajax({
+                url: "/UsuarioIndex/Add/Estados/" + idPais,
+                type: "GET",
+                dataType: "json",
+                success: function(data, textStatus, jqXHR){
+                    $("#ddlEstado").empty().append('<option value=0> Escoge una opcion </option>')
+                    
+                    $.each(data.objects, function(i, estado){
+                       $("#ddlEstado").append("<option value=" + estado.idEstado + ">" + estado.nombre + "</option>"); 
+                    });
+                    if(callback) callback();
+                }
+            });
+            }
 
 <!-----------------------------------------------------------------------------DDL ESTADO--------------------------------------------------------------------------->
             $(document).ready(function () {
@@ -364,7 +381,25 @@
                     });
                 });
             });
-
+            
+            
+            function cargaMunicipios(idEstado, callback){
+            
+            $.ajax({
+                url: "/UsuarioIndex/Add/Municipios/" + idEstado,
+                type: "GET",
+                dataType: "json",
+                success: function(data, textStatus, jqXHR){
+                    $("#ddlMunicipio").empty().append('<option value=0> Escoge una opcion </option>');
+                    
+                    $.each(data.objects, function(i, municipio){
+                       $("#ddlMunicipio").append("<option value=" + municipio.idMunicipio + ">" + municipio.nombre + "</option>"); 
+                    });
+                    if(callback) callback();
+                }
+            });
+            }
+            
 <!-----------------------------------------------------------------------------DDL MUNICIPIO--------------------------------------------------------------------------->
             $(document).ready(function () {
                 $("#ddlMunicipio").change(function () {
@@ -377,7 +412,7 @@
                             $("#ddlColonia").empty();
                             $("#ddlColonia").append("<option value=0> Escoge una opcion </option>");
                             $.each(data.objects, function (i, colonia) {
-                                $("#ddlColonia").append("<option value = " + colonia.idColonia + ">" + colonia.nombreColonia + "</option>");
+                                $("#ddlColonia").append("<option value = " + colonia.idColonia + ">" + colonia.nombre + "</option>");
                             });
                         },
                         error: function (jqXHR, textStatus, errorThrown) {
@@ -387,6 +422,23 @@
                 });
             });
 
+            function cargaColonias(idMunicipio, callback){
+            
+            $.ajax({
+                url: "/UsuarioIndex/Add/Colonias/" + idMunicipio,
+                type: "GET",
+                dataType: "json",
+                success: function(data, textStatus, jqXHR){
+                    $("#ddlColonia").empty().append('<option value=0> Escoge una opcion </option>')
+                    
+                    $.each(data.objects, function(i, colonia){
+                       $("#ddlColonia").append("<option value=" + colonia.idColonia + ">" + colonia.nombreColonia + "</option>"); 
+                    });
+                    if(callback) callback();
+                }
+            });
+            }
+            
 <!-----------------------------------------------------------------------------ELIMINAR DIRECCION--------------------------------------------------------------------------->
             $(document).on("click", ".btnEliminarDireccion", function () {
                 const idDireccionDelete = $(this).attr("data-id");
@@ -450,10 +502,25 @@ $(document).on("click", ".btnEditarDireccion[data-id]", function () {
                         $("#Calle").val(direccion.calle);
                         $("#NumeroInterior").val(direccion.numeroInterior);
                         $("#NumeroExterior").val(direccion.numeroExterior);
-                        $("#ddlPais").val(direccion.colonia.municipio.estado.pais.idPais);
-                        $("#ddlEstado").val(direccion.colonia.municipio.estado.idEstado);
-                        $("#ddlMunicipio").val(direccion.colonia.municipio.idMunicipio);
-                        $("#ddlColonia").val(direccion.colonia.idColonia);
+                        
+                        const idPais = direccion.colonia.municipio.estado.pais.idPais;
+                        const idEstado = direccion.colonia.municipio.estado.idEstado;
+                        const idMunicipio = direccion.colonia.municipio.idMunicipio;
+                        const idColonia = direccion.colonia.idColonia;
+                        
+                        $("#ddlPais").val(idPais);
+                        
+                        cargaEstados(idPais, function(){
+                            $("#ddlEstado").val(idEstado);
+                            
+                            cargaMunicipios(idEstado, function(){
+                                $("#ddlMunicipio").val(idMunicipio);
+                                
+                                cargaColonias(idMunicipio, function(){
+                                    $("#ddlColonia").val(idColonia);
+                                });
+                            });
+                        });
                         
                         $("#FormDireccion").modal("show");
                     },
@@ -461,7 +528,7 @@ $(document).on("click", ".btnEditarDireccion[data-id]", function () {
                         alert("No hay datos");
                     }
                 });
-});
+            });
         </script>
   
         
