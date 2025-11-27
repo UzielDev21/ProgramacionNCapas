@@ -60,7 +60,8 @@ import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 
@@ -105,16 +106,22 @@ public class UsuarioController {
 
 //------------------------------------------------------------------INDEX------------------------------------------------------------------//
     @GetMapping
-    public String Index(Model model) {
+    public String Index(Model model, @AuthenticationPrincipal UserDetails userDetails) {
 
 //        Result result = usuarioDAOImplementation.GetAll();
 //        model.addAttribute("Usuarios", result.objects);
 //        model.addAttribute("Roles", rolDAOImplementation.GetAll().objects);
         Result resultJPA = usuarioJPADAOImplementation.GetAllJPA();
-
         model.addAttribute("Usuarios", resultJPA.objects);
         model.addAttribute("Roles", rolJPADAOImplementation.GetAllJPA().objects);
-        model.addAttribute("Usuario", new Usuario());
+
+        Usuario usuario = new Usuario();
+        usuario.setStatus(2);
+        model.addAttribute("Usuario", usuario);
+
+        if (userDetails != null) {
+            model.addAttribute("UsuarioLogueado", userDetails.getUsername()); // o el objeto completo
+        }
 
         return "UsuarioIndex";
     }
@@ -350,37 +357,37 @@ public class UsuarioController {
 
         return "UsuarioDetails";
     }
-    
+
 //------------------------------------------------------------------ACTUALIZAR IMAGEN------------------------------------------------------------------//
     @PostMapping("/Details/Imagen/{IdUsuario}")
     public String UpdateImagen(@PathVariable int IdUsuario, RedirectAttributes redirectAttributes,
-                               @RequestParam("imagenFile") MultipartFile multipartFile){
+            @RequestParam("imagenFile") MultipartFile multipartFile) {
 
         try {
-            
+
             if (multipartFile != null && !multipartFile.isEmpty()) {
                 String originalName = multipartFile.getOriginalFilename();
                 if (originalName != null && originalName.contains(".")) {
-                    
+
                     String extension = originalName.split("\\.")[1];
-                    
+
                     if (extension.equalsIgnoreCase("jpg") || extension.equalsIgnoreCase("png")) {
                         byte[] byteImagen = multipartFile.getBytes();
                         String imagenBase64 = Base64.getEncoder().encodeToString(byteImagen);
-                        
+
                         usuarioJPADAOImplementation.UpdateImagenJPA(IdUsuario, imagenBase64);
                         redirectAttributes.addFlashAttribute("MsgSuccessImagen", "La imagen se actualizo correctamente");
-                    }else{
+                    } else {
                         redirectAttributes.addFlashAttribute("MsgErrorImagen", "Solo se pueden ingresar png o jpg");
                     }
-                    
+
                 }
             }
-            
+
         } catch (IOException ex) {
             redirectAttributes.addFlashAttribute("MsgError", "Error al procesar la imagen" + ex.getMessage());
         }
-        
+
         return "redirect:/UsuarioIndex/Details/" + IdUsuario;
     }
 
@@ -393,9 +400,6 @@ public class UsuarioController {
 
         return "redirect:/UsuarioIndex/Details/" + usuario.getIdUsuario();
     }
-    
-    
-    
 
 //------------------------------------------------------------------INSERTAR O ACTUALIZAR NUEVA DIRECCION DETAILS------------------------------------------------------------------//
     @PostMapping("/DetailsDireccion/{IdUsuario}")

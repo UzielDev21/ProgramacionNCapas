@@ -18,18 +18,18 @@ import java.util.List;
 @Entity
 @Table(name = "USUARIO")
 public class UsuarioJPA {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idusuario", nullable = false)
     private int IdUsuario;
-    
+
     @Column(name = "username")
-    private String UserName;
-    
+    private String userName;
+
     @Column(name = "nombre")
     private String Nombre;
-    
+
     @Column(name = "apellidopaterno")
     private String ApellidoPaterno;
 
@@ -56,26 +56,29 @@ public class UsuarioJPA {
 
     @Column(name = "curp")
     private String Curp;
-    
+
     @Column(name = "imagenfile")
     @Lob
     private String Imagen;
 
+    @Column(name = "status")
+    private int Status;
+
     @ManyToOne
     @JoinColumn(name = "idrol")
     public RolJPA RolJPA;
-    
+
     @OneToMany(mappedBy = "UsuarioJPA", cascade = CascadeType.ALL, orphanRemoval = true)
     public List<DireccionJPA> DireccionesJPA = new ArrayList<>();
-    
+
 //------------------------------------------------------------------SETTERS Y GETTERS------------------------------------------------------------------//
     public UsuarioJPA() {
     }
 
-    public UsuarioJPA(int IdUsuario, String UserName, String Nombre, String ApellidoPaterno, String ApellidoMaterno, String Email,
+    public UsuarioJPA(int IdUsuario, String userName, String Nombre, String ApellidoPaterno, String ApellidoMaterno, String Email,
             String Password, Date FechaNacimiento, String Sexo, String Telefono, String Celular, String Curp, String Imagen) {
         this.IdUsuario = IdUsuario;
-        this.UserName = UserName;
+        this.userName = userName;
         this.Nombre = Nombre;
         this.ApellidoPaterno = ApellidoPaterno;
         this.ApellidoMaterno = ApellidoMaterno;
@@ -96,13 +99,13 @@ public class UsuarioJPA {
     public int getIdUsuario() {
         return IdUsuario;
     }
-    
-    public void setUserName(String UserName){
-        this.UserName = UserName;
+
+    public void setUserName(String UserName) {
+        this.userName = UserName;
     }
-    
-    public String getUserName(){
-        return UserName;
+
+    public String getUserName() {
+        return userName;
     }
 
     public void setNombre(String Nombre) {
@@ -184,30 +187,37 @@ public class UsuarioJPA {
     public String getCurp() {
         return Curp;
     }
-    
-    public void setImagen(String Imagen){
+
+    public void setImagen(String Imagen) {
         this.Imagen = Imagen;
     }
-    
-    public String getImagen(){
+
+    public String getImagen() {
         return Imagen;
     }
-    
-    public void SetRolJPA(RolJPA RolJPA){
+
+    public void setStatus(int Status) {
+        this.Status = Status;
+    }
+
+    public int getStatus() {
+        return Status;
+    }
+
+    public void SetRolJPA(RolJPA RolJPA) {
         this.RolJPA = RolJPA;
     }
-    
-    public RolJPA getRolJPA(){
+
+    public RolJPA getRolJPA() {
         return RolJPA;
     }
 
     public void setDireccionesJPA(List<DireccionJPA> DireccionesJPA) {
         this.DireccionesJPA = DireccionesJPA;
     }
-    
+
     public List<DireccionJPA> getDireccionesJPA() {
         return DireccionesJPA;
     }
-
 
 }

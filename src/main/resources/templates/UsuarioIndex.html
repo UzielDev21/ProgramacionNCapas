@@ -30,6 +30,23 @@
 
     <body class = "container" style="background-color:#A2DFE8" layout:fragment="body">
 
+
+        <div class="position-absolute top-0 end-0 p-3">
+            <div class="d-grid gap-2">
+
+                <span class="fw-bold"
+                      th:text="${UsuarioLogueado != null ? UsuarioLogueado : 'Usuario'}">Usuario</span>
+
+
+                <form method="POST" th:action="@{/logout}">
+                    <button class="btn btn-outline-danger btn-sm" type="submit">
+                        <i class="bi bi-box-arrow-right"></i> Salir
+                    </button>
+                </form>
+
+            </div>
+        </div>
+
         <div>
             <div class="col-12, text-center" style="border: 2px solid #000; border-radius: 15px; font-size: 35px">Usuarios</div>
 
@@ -43,14 +60,23 @@
                             <input class="form-control" type="text" id="NombreUsuario" name="NombreUsuario" placeholder="Juan" th:field="*{Nombre}">                    
                         </div>
 
-                        <div class="col-md-3"> 
+                        <div class="col-md-2"> 
                             <label for="IdRol">Apellido Paterno: </label>
                             <input class="form-control" type="text" id="ApellidoPaterno" name="ApellidoPaterno" placeholder="Sanchéz" th:field="*{ApellidoPaterno}">                    
                         </div>
 
-                        <div class="col-md-3"> 
+                        <div class="col-md-2"> 
                             <label for="IdRol">Apellido Materno: </label>
                             <input class="form-control" type="text" id="ApellidoMaterno" name="ApellidoMaterno" placeholder="Perez" th:field="*{ApellidoMaterno}">                    
+                        </div>
+
+                        <div class="col-md-2">
+                            <label for="Status">Estatus del usuario: </label>
+                            <select class="form-select" id="Status" name="Status" th:field="*{Status}">
+                                <option value=2>Sin selección</option>
+                                <option value=1>Habilitado</option>
+                                <option value=0>No habilitado</option>
+                            </select>
                         </div>
 
                         <div class="col-md-3"> 
@@ -69,7 +95,7 @@
                 </form>
             </div>
         </div>
-        
+
         <div class="mb-2 mt-2">
             <a class="btn btn-outline-dark" th:href="@{UsuarioIndex/Add}"> Registrar </a>
             <a class="btn btn-outline-dark" th:href="@{UsuarioIndex/CargaMasiva}"> Carga Masiva</a>
@@ -103,10 +129,9 @@
                                 <img th:if='${Usuario.Imagen == null}'
                                      src=" https://icon-library.com/images/default-user-icon/default-user-icon-18.jpg"
                                      style="max-width: 150px; max-height: 150px; border-radius: 130px">
-
                             </div>
 
-                            <div style="display:flex; flex-direction:column; align-items:center; gap:13px;">
+                            <div  class="mt-2" style="display:flex; flex-direction:row; align-items:center; gap:13px;">
                                 <div>   
                                     <a th:href="@{/UsuarioIndex/Details/} + ${Usuario.IdUsuario}" class ="btn btn-outline-info" >
                                         Editar
@@ -118,6 +143,15 @@
                                         Eliminar
                                     </a>
                                 </div>
+                            </div>
+
+                            <div class="form-check form-switch mt-2 d-flex justify-content-center">
+                                <input class="form-check-input"
+                                       type="checkbox"
+                                       role="switch"
+                                       th:id="'switchUsuario-' + ${Usuario.IdUsuario}"
+                                       style="width: 60px; height: 30px"
+                                       th:checked="${Usuario.Status == 1}" />
                             </div>
 
                         </td>
@@ -150,25 +184,25 @@
 
         <script th:if="${successMessage}" th:inline="javascript">
             Swal.fire({
-                title: [[${successMessage}]],
-                icon: "success",
-                draggable: true
+            title: [[${successMessage}]],
+                    icon: "success",
+                    draggable: true
             });
         </script>
 
         <script th:if="${MsgDeleteSuccess}" th:inline="javascript">
             Swal.fire({
-                title: [[${MsgDeleteSuccess}]],
-                icon: "success",
-                draggable: true
+            title: [[${MsgDeleteSuccess}]],
+                    icon: "success",
+                    draggable: true
             });
         </script>
 
         <script th:if="${MsgDeleteError}" th:inline="javascript">
             Swal.fire({
-                title: [[${MsgDeleteError}]],
-                icon: "error",
-                draggable: true
+            title: [[${MsgDeleteError}]],
+                    icon: "error",
+                    draggable: true
             });
         </script>
 

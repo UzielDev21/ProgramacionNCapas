@@ -101,12 +101,12 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPA {
 
         return result;
     }
-    
+
     @Override
     @Transactional
-    public Result UpdateImagenJPA(int IdUsuario, String imagenBase64){
+    public Result UpdateImagenJPA(int IdUsuario, String imagenBase64) {
         Result result = new Result();
-        
+
         try {
             UsuarioJPA usuarioBase = entityManager.find(UsuarioJPA.class, IdUsuario);
 //            UsuarioJPA usuarioJPA = modelMapper.map(usuario, UsuarioJPA.class);
@@ -125,19 +125,17 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPA {
 //            usuarioJPA.setCelular(usuarioBase.getCelular());
 //            usuarioJPA.setCurp(usuarioBase.getCurp());
 //            usuarioJPA.setDireccionesJPA(usuarioBase.getDireccionesJPA());
-            
 //            RolJPA rolJPA = modelMapper.map(usuario.Rol, RolJPA.class);
 //            usuarioJPA.RolJPA = rolJPA;
-            
             entityManager.merge(usuarioBase);
-            
+
             result.correct = true;
         } catch (Exception ex) {
             result.correct = false;
             result.errorMessage = ex.getLocalizedMessage();
             result.ex = ex;
         }
-        
+
         return result;
     }
 
@@ -174,49 +172,49 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPA {
 
     @Override
     @Transactional
-    public Result DeleteJPA(int IdUsuario){
+    public Result DeleteJPA(int IdUsuario) {
         Result result = new Result();
-        
+
         try {
             UsuarioJPA usuarioJPA = entityManager.find(UsuarioJPA.class, IdUsuario);
             entityManager.remove(usuarioJPA);
-            
+
             result.correct = true;
-            
+
         } catch (Exception ex) {
             result.correct = false;
             result.errorMessage = ex.getLocalizedMessage();
             result.ex = ex;
         }
-        
+
         return result;
     }
-    
+
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Result AddAllJPA(List<Usuario> usuarios){
+    public Result AddAllJPA(List<Usuario> usuarios) {
         Result result = new Result();
-        
+
         try {
-            
+
             for (Usuario usuario : usuarios) {
-                
+
                 UsuarioJPA usuarioJPA = modelMapper.map(usuario, UsuarioJPA.class);
                 usuarioJPA.RolJPA = modelMapper.map(usuario.Rol, RolJPA.class);
                 entityManager.persist(usuarioJPA);
-                
+
             }
-            
+
             result.correct = true;
         } catch (Exception ex) {
             result.correct = false;
             result.errorMessage = ex.getLocalizedMessage();
             result.ex = ex;
         }
-        
+
         return result;
     }
-    
+
     @Override
     public Result BuscarUsuarioJPA(Usuario usuario) {
         Result result = new Result();
@@ -252,6 +250,15 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPA {
                 }
             }
 
+            if (usuario.getStatus() == 0 || usuario.getStatus() == 1) {
+                if (!filtro) {
+                    queryValidar = queryValidar + " WHERE usuarioJPA.Status = :status";
+                    filtro = true;
+                } else {
+                    queryValidar = queryValidar + " AND usuarioJPA.Status = :status";
+                }
+            }
+
             if (usuario.Rol != null && usuario.Rol.getIdRol() > 0) {
                 if (!filtro) {
                     queryValidar = queryValidar + " WHERE usuarioJPA.RolJPA.IdRol = :idRol";
@@ -276,8 +283,13 @@ public class UsuarioJPADAOImplementation implements IUsuarioJPA {
             if (usuario.getApellidoMaterno() != null && !usuario.getApellidoMaterno().isEmpty()) {
                 queryBuscar.setParameter("apellidoMaterno", "%" + usuario.getApellidoMaterno() + "%");
             }
+
+            if (usuario.getStatus() == 0 || usuario.getStatus() == 1) {
+                queryBuscar.setParameter("status", usuario.getStatus());
+            }
+
             if (usuario.Rol != null && usuario.Rol.getIdRol() > 0) {
-                queryBuscar.setParameter("idRol",  usuario.Rol.getIdRol());
+                queryBuscar.setParameter("idRol", usuario.Rol.getIdRol());
             }
 
             List<UsuarioJPA> usuariosJPA = queryBuscar.getResultList();

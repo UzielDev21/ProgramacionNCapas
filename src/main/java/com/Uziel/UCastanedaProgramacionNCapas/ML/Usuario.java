@@ -72,6 +72,8 @@ public class Usuario {
     private String Curp;
 
     private String Imagen;
+    
+    private int Status;
 
     private String extension;
 
@@ -209,16 +211,24 @@ public class Usuario {
         this.Rol = Rol;
     }
 
-    public List<Direccion> getDirecciones() {
-        return Direcciones;
+    public int getStatus() {
+        return Status;
     }
 
+    public void setStatus(int Status) {
+        this.Status = Status;
+    }
+    
     public String getExtension() {
         return extension;
     }
 
     public void setExtension(String extension) {
         this.extension = extension;
+    }
+    
+    public List<Direccion> getDirecciones() {
+        return Direcciones;
     }
 
     public void setDirecciones(List<Direccion> Direcciones) {
